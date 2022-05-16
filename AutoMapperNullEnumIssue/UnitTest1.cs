@@ -16,12 +16,14 @@ public class SomeDestinationDto
 
 public enum SomeSourceEnum
 {
-    First = 1
+    First = 1,
+    FoBar = 2
 }
 
 public enum SomeDestinationEnum
 {
-    First = 1
+    First = 1,
+    FooBar = 2
 }
 
 public class SomeProfile : Profile
@@ -29,7 +31,10 @@ public class SomeProfile : Profile
     public SomeProfile()
     {
         CreateMap<SomeSourceDto, SomeDestinationDto>();
-        CreateMap<SomeSourceEnum, SomeDestinationEnum>().ConvertUsingEnumMapping(opt => opt.MapByName());
+
+        CreateMap<SomeSourceEnum, SomeDestinationEnum>().ConvertUsingEnumMapping(opt => opt
+            .MapByName()
+            .MapValue(SomeSourceEnum.FoBar, SomeDestinationEnum.FooBar));
     }
 }
 
@@ -46,6 +51,7 @@ public class UnitTest1
             cfg.EnableEnumMappingValidation();
         });
         _mapper = mapperConfiguration.CreateMapper();
+        mapperConfiguration.AssertConfigurationIsValid();
     }
 
     [TestMethod]
