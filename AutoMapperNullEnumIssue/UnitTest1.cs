@@ -1,3 +1,4 @@
+using System;
 using AutoMapper;
 using AutoMapper.Extensions.EnumMapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -28,7 +29,14 @@ public class SomeProfile : Profile
 {
     public SomeProfile()
     {
-        CreateMap<SomeSourceDto, SomeDestinationDto>();
+        CreateMap<SomeSourceDto, SomeDestinationDto>()
+            .ForMember(
+                dst => dst.SomeEnum,
+                opt => opt.MapFrom(
+                    src => Enum.IsDefined(typeof(SomeDestinationEnum), src.SomeEnum)
+                        ? src.SomeEnum
+                        : null));
+
         CreateMap<SomeSourceEnum, SomeDestinationEnum>().ConvertUsingEnumMapping(opt => opt.MapByName());
     }
 }
